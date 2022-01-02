@@ -4,15 +4,19 @@ import com.example.chatapp.client.Client;
 import com.example.chatapp.utils.AlertUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
@@ -35,37 +39,33 @@ public class ChatBoxController implements Initializable {
     Button btnOutChat;
 
     @FXML
-            TextFlow textFlow;
+    TextFlow textFlow;
+
 
     Client client = MainController.client;
     String dataReceive;
     String EXIT = "_EXIT";
     String FOUND_SUCCESS = "[a-zA-Z0-9 \\u0080-\\u9fff]*-[a-zA-Z0-9 \\u0080-\\u9fff]*";
     String ACCEPT_USER = "Y/N";
-    String regex = "_\\w+";
     public void receive() {
         Thread thread = new Thread(() -> {
-            while (true) {
-                dataReceive = client.getRecv().receiveFromServer();
+            while (!(dataReceive = client.getRecv().receiveFromServer()).equalsIgnoreCase("_byeClient")) {
+//                dataReceive = client.getRecv().receiveFromServer();
                 System.out.println("Nhận: " + dataReceive);
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        if (!dataReceive.matches(regex)) {
-                            showMessage(dataReceive, "#FFFFFF", "#869EFF");
-                        }
-
                         if (dataReceive.contains(EXIT)) {
                             AlertUtils.showNotification(dataReceive + " khỏi phòng chat\n" + "Chúng tôi sẽ tìm người khác ngay sau đây" );
                             try {
-                                client.getSend().sendToServer("_find_new");
+                                client.getSend().sendToServer("_findnew");
 
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
 
                         }
-                        if (dataReceive.contains(ACCEPT_USER)) {
+                        else if (dataReceive.contains(ACCEPT_USER)) {
                             Alert alert = AlertUtils.alert(Alert.AlertType.CONFIRMATION, dataReceive);
                             Optional<ButtonType> result = alert.showAndWait();
                             if (result.isEmpty() || result.get() != ButtonType.OK) {
@@ -82,13 +82,15 @@ public class ChatBoxController implements Initializable {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-//                        break;
                             }
                         }
-//                System.out.println( receive+ "match: " +receive.matches("\\w+-\\w+") );
-                        if (dataReceive.matches(FOUND_SUCCESS)){
+
+                        else if (dataReceive.matches(FOUND_SUCCESS)){
                             AlertUtils.showNotification("Bạn đã được ghép đôi\n" + "Đi đến phòng chat: " + dataReceive);
                             messageBox.getChildren().clear();
+                        }
+                        else  {
+                            showMessage(dataReceive, "#FFFFFF", "#869EFF");
                         }
 
                     }
@@ -98,7 +100,6 @@ public class ChatBoxController implements Initializable {
 
     thread.start();
     }
-
 
 
     public void onActionSend(ActionEvent actionEvent) throws IOException {
@@ -133,6 +134,7 @@ public class ChatBoxController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         receive();
+
     }
 
     public void onOutChat(ActionEvent actionEvent) throws IOException {
@@ -145,7 +147,11 @@ public class ChatBoxController implements Initializable {
             client.getSend().sendToServer("_bye");
             client.getSend().sendToServer("_findnew");
 
-//                        break;
         }
+    }
+
+    public static void shutdown() {
+        Thread thisThread = Thread.currentThread();
+        thisThread.interrupt();
     }
 }

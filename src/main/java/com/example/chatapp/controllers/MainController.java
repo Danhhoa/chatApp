@@ -3,7 +3,9 @@ package com.example.chatapp.controllers;
 import com.example.chatapp.Main;
 import com.example.chatapp.client.Client;
 import com.example.chatapp.utils.AlertUtils;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -14,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
@@ -110,6 +113,28 @@ public class MainController {
         stage.setTitle("chatroom");
         stage.setScene(scene);
         stage.show();
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                try {
+                    Alert alert = AlertUtils.alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn thoát không?");
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.isEmpty() || result.get() != ButtonType.OK) {
+                        System.out.println("NO exit");
+                    }
+                    else {
+                        client.getSend().sendToServer("_bye");
+                        client.getSend().sendToServer("_exit");
+//                        ChatBoxController.shutdown();
+                        client.close();
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void closeStage() {

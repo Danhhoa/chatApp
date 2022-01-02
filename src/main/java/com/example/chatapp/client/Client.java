@@ -57,6 +57,10 @@ public class Client {
 
     public void close() throws IOException {
         socket.close();
+        in.close();
+        out.close();
+        send.close();
+        recv.close();
     }
     //    public static void main(String[] args) throws IOException {
 //       new Client(host, port);

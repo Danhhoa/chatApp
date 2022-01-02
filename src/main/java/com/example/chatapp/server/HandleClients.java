@@ -65,9 +65,12 @@ public class HandleClients implements Runnable {
                 System.out.println("Server received: " + dataReceived + " from " + socket.toString() + " # Client " + nickname);
 //                    if (flag) {
                         if (dataReceived.equalsIgnoreCase(EXIT)) {
+                            clientNickname.remove(this.nickname);
+                            out.write("_byeClient\n");
+                            out.flush();
                             break;
                         }
-                        if (dataReceived.equalsIgnoreCase(BYE)) {
+                        else if (dataReceived.equalsIgnoreCase(BYE)) {
                             System.out.println("đang là client : " +this.nickname );
                             if (chatCouple.containsKey(this)) {
                                 chatCouple.get(this).out.write(this.nickname + "_EXIT" + '\n');
@@ -85,25 +88,27 @@ public class HandleClients implements Runnable {
 
 
                         }
-                        if(dataReceived.equalsIgnoreCase(FIND_NEW_CHAT)) {
+                        else if(dataReceived.equalsIgnoreCase(FIND_NEW_CHAT)) {
                             pairing(this);
                         }
-//                            for(HandleClients client : Server.workers) {
-                                for (HandleClients couple : chatCouple.keySet()) {
-                                    if (clientID.equals(couple.clientID)) {
-                                        chatCouple.get(couple).out.write(couple.nickname+": "+dataReceived+'\n');
-                                        chatCouple.get(couple).out.flush();
-                                        System.out.println("Server write 1: " + dataReceived + " to " + chatCouple.get(couple).clientID);
-                                        break;
-                                    }
-                                    if (clientID.equals(chatCouple.get(couple).clientID)) {
-                                        couple.out.write(chatCouple.get(couple).nickname + ": " + dataReceived+'\n');
-                                        couple.out.flush();
-                                        System.out.println("Server write 2: " + dataReceived + " to " + couple.clientID);
-                                        break;
-                                    }
-
+                        else {
+                            for (HandleClients couple : chatCouple.keySet()) {
+                                if (clientID.equals(couple.clientID)) {
+                                    chatCouple.get(couple).out.write(couple.nickname+": "+dataReceived+'\n');
+                                    chatCouple.get(couple).out.flush();
+                                    System.out.println("Server write 1: " + dataReceived + " to " + chatCouple.get(couple).clientID);
+                                    break;
                                 }
+                                if (clientID.equals(chatCouple.get(couple).clientID)) {
+                                    couple.out.write(chatCouple.get(couple).nickname + ": " + dataReceived+'\n');
+                                    couple.out.flush();
+                                    System.out.println("Server write 2: " + dataReceived + " to " + couple.clientID);
+                                    break;
+                                }
+
+                            }
+                        }
+
 
             }
             System.out.println("Closed socket for client " + clientID + " " + socket.toString());

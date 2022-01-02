@@ -33,24 +33,4 @@ public class ReceiveMessage implements Runnable {
     public void run() {
 
     }
-//    public void run() {
-//        try {
-//            String data = "";
-//            while(data != null) {
-//                if (data.equalsIgnoreCase("success")) {
-//                    System.out.println("Tạo tài khoản thành công");
-//                }
-//                if (data.equalsIgnoreCase("fail")) {
-//                    System.out.println("tên đã được sử dụng. hãy nhập lại:");
-//                }
-//                if (!data.equalsIgnoreCase("success") && !data.equalsIgnoreCase("fail")) {
-//                    System.out.println("Receive: " + data);
-//                }
-//
-//                data = in.readLine();
-//            }
-//        } catch (IOException e) {
-//            System.err.println(e);
-//        }
-//    }
 }
