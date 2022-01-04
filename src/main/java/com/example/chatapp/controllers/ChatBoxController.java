@@ -90,7 +90,7 @@ public class ChatBoxController implements Initializable {
                             messageBox.getChildren().clear();
                         }
                         else  {
-                            showMessage(dataReceive, "#FFFFFF", "#869EFF");
+                            showMessage(dataReceive, "#ffffff", "#0098c7");
                         }
 
                     }

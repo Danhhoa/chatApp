@@ -126,7 +126,7 @@ public class HandleClients implements Runnable {
         if (waitList.isEmpty()) {
             System.out.println("nick name:" +nickname);
             waitList.add(client);
-            out.write("_founding");
+            out.write("Đang tìm người mới");
             out.newLine();
             out.flush();
             System.out.println(nickname + " đang trong hàng đợi");
@@ -162,7 +162,7 @@ public class HandleClients implements Runnable {
                 }
             }
             if(!flag) {
-                out.write("_founding"+'\n');
+                out.write("Đang tìm người mới"+'\n');
                 out.flush();
                 waitList.add(this);
             }
