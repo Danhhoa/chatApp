@@ -11,7 +11,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("main.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 300, 150);
+        Scene scene = new Scene(fxmlLoader.load(), 360, 160);
+        scene.getStylesheets().add(getClass().getResource("/com/example/chatapp/mainCSS.css").toExternalForm());
         stage.setTitle("Ứng dụng chat với người lạ");
         stage.setScene(scene);
         stage.show();

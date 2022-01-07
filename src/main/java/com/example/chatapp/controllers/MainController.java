@@ -107,6 +107,7 @@ public class MainController {
         System.out.println("chat room");
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/chatapp/chat-box.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+        scene.getStylesheets().add(getClass().getResource("/com/example/chatapp/mainCSS.css").toExternalForm());
         Stage stage = new Stage();
         ChatBoxController chatBoxController = new ChatBoxController();
         fxmlLoader.setController(chatBoxController);
@@ -120,14 +121,15 @@ public class MainController {
                 try {
                     Alert alert = AlertUtils.alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn thoát không?");
                     Optional<ButtonType> result = alert.showAndWait();
-                    if (result.isEmpty() || result.get() != ButtonType.OK) {
+                    if (result.isEmpty() || result.get() == ButtonType.CANCEL) {
                         System.out.println("NO exit");
                     }
-                    else {
+                    if (result.get() == ButtonType.OK) {
                         client.getSend().sendToServer("_bye");
                         client.getSend().sendToServer("_exit");
-//                        ChatBoxController.shutdown();
                         client.close();
+                        Platform.exit();
+                        System.exit(0);
                     }
 
                 } catch (IOException e) {

@@ -25,6 +25,11 @@
             <artifactId>javafx-fxml</artifactId>
             <version>16</version>
         </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>4.7.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>

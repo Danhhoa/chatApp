@@ -38,6 +38,9 @@ public class ChatBoxController implements Initializable {
     @FXML
     TextFlow textFlow;
 
+    @FXML
+            Label lbName;
+
 
     Client client = MainController.client;
     String dataReceive;
@@ -46,7 +49,7 @@ public class ChatBoxController implements Initializable {
     String ACCEPT_USER = "Y/N";
     public void receive() {
         Thread thread = new Thread(() -> {
-            while (!(dataReceive = client.getRecv().receiveFromServer()).equalsIgnoreCase("_byeClient")) {
+            while ((dataReceive = client.getRecv().receiveFromServer()) != null) {
 //                dataReceive = client.getRecv().receiveFromServer();
                 System.out.println("Nhận: " + dataReceive);
                 Platform.runLater(new Runnable() {
@@ -87,7 +90,7 @@ public class ChatBoxController implements Initializable {
                             messageBox.getChildren().clear();
                         }
                         else  {
-                            showMessage(dataReceive, "#FFFFFF", "#869EFF");
+                            showMessage(dataReceive, "#ffffff", "#0098c7");
                         }
 
                     }
@@ -138,7 +141,7 @@ public class ChatBoxController implements Initializable {
         Alert alert = AlertUtils.alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn thoát không?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isEmpty() || result.get() != ButtonType.OK) {
-            client.getSend().sendToServer("N");
+            System.out.println("cancel");
         }
         else {
             client.getSend().sendToServer("_bye");

@@ -1,0 +1,37 @@
+
+.pane {
+    -fx-background-color: #B8C7FF;
+    -fx-opacity: 5;
+}
+
+.btn {
+    -fx-cursor : hand;
+    -fx-background-color: #6280F9;
+    -fx-background-radius : 10;
+    -fx-effect: dropshadow(one-pass-box, #667099, 10, 0,0,8);
+}
+
+.btn:hover {
+    -fx-background-color: #203790;
+}
+
+.btn:pressed {
+    -fx-background-color: #203790;
+    -fx-effect: dropshadow(one-pass-box, #1C233E, 10, 0,0,4);
+    -fx-translate-y: 4;
+}
+
+.tf_box {
+    -fx-font-size: 16;
+ -fx-background-radius : 10;
+}
+
+#pane_mess {
+       -fx-background-radius : 10;
+     -fx-padding: 20,5,20,0;
+}
+
+#vbox {
+    -fx-background-radius : 10;
+    -fx-background-color: #B8C7FF;
+}

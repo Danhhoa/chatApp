@@ -63,11 +63,10 @@ public class HandleClients implements Runnable {
 
                 dataReceived = in.readLine();
                 System.out.println("Server received: " + dataReceived + " from " + socket.toString() + " # Client " + nickname);
-//                    if (flag) {
+
                         if (dataReceived.equalsIgnoreCase(EXIT)) {
                             clientNickname.remove(this.nickname);
-                            out.write("_byeClient\n");
-                            out.flush();
+                            valueClient.remove(this.nickname);
                             break;
                         }
                         else if (dataReceived.equalsIgnoreCase(BYE)) {
@@ -76,8 +75,6 @@ public class HandleClients implements Runnable {
                                 chatCouple.get(this).out.write(this.nickname + "_EXIT" + '\n');
                                 chatCouple.get(this).out.flush();
                                 chatCouple.remove(this);
-                                this.isActive = false;
-//                            this.socket.close();
                             } else {
                                 HandleClients getKeyChatting = getKeyByValues(chatCouple, this);
                                 System.out.println("lấy key:" +getKeyChatting.nickname);
@@ -150,7 +147,6 @@ public class HandleClients implements Runnable {
                         chatCouple.put(valueClient.get(nickname), waitList.get(i));
                         waitList.remove(i);
                         System.out.println("sau khi xóa: " +waitList);
-//                        System.out.println("" + chatCouple.);
                         flag = true;
                         break;
                     } else {
