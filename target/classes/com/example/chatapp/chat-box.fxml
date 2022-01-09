@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 
-<AnchorPane styleClass="pane" prefHeight="485.0" prefWidth="485.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatapp.controllers.ChatBoxController">
+<AnchorPane prefHeight="526.0" prefWidth="392.0" styleClass="pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatapp.controllers.ChatBoxController">
    <children>
-      <TextField fx:id="tfMessage" layoutX="108.0" layoutY="414.0" prefHeight="40.0" prefWidth="235.0" promptText="nhập tin nhắn" styleClass="tf_box" />
-      <Button fx:id="btnSend" layoutX="371.0" layoutY="414.0" mnemonicParsing="false" onAction="#onActionSend" prefHeight="40.0" prefWidth="67.0" styleClass="btn" text="Gửi" textFill="WHITE" />
-      <ScrollPane id="pane_mess" layoutX="108.0" layoutY="9.0" prefHeight="369.0" prefWidth="330.0">
+      <TextField fx:id="tfMessage" layoutX="28.0" layoutY="454.0" prefHeight="40.0" prefWidth="235.0" promptText="nhập tin nhắn" styleClass="tf_box" />
+      <Button fx:id="btnSend" layoutX="290.0" layoutY="454.0" mnemonicParsing="false" onAction="#onActionSend" prefHeight="40.0" prefWidth="67.0" styleClass="btn" text="Gửi" textFill="WHITE" />
+      <ScrollPane id="scroll_pane" layoutX="28.0" layoutY="61.0" prefHeight="369.0" prefWidth="329.0">
          <content>
-            <VBox id="vbox" fx:id="messageBox" prefHeight="364.0" prefWidth="306.0" />
+            <VBox id="vbox" fx:id="messageBox" prefHeight="364.0" prefWidth="327.0" />
          </content>
       </ScrollPane>
-      <Button fx:id="btnOutChat" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#onOutChat" prefHeight="40.0" prefWidth="53.0" text="Thoát" textFill="WHITE" />
+      <Button id="btnOutChat" fx:id="btnOutChat" layoutX="28.0" layoutY="14.0" mnemonicParsing="false" onAction="#onOutChat" prefHeight="31.0" prefWidth="38.0" textFill="WHITE" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="75.0" layoutY="14.0" prefHeight="31.0" prefWidth="282.0" text="Phòng chat với người lạ" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
 
    </children>
 </AnchorPane>

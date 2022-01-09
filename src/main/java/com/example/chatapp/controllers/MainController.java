@@ -75,12 +75,9 @@ public class MainController {
                     client = new Client(Client.getHost(), 8085);
                     return;
                 }
-//                receive = client.getRecv().receiveFromServer();
                 else if (receive.equalsIgnoreCase(WAIT_TO_FOUND)) {
                     flag = true;
                     AlertUtils.showNotification("Đang tìm người ghép đôi");
-//                    break;
-
                 }
                 else if (receive.contains(ACCEPT_USER)) {
                     Alert alert = AlertUtils.alert(Alert.AlertType.CONFIRMATION, receive);
@@ -93,13 +90,12 @@ public class MainController {
 //                        break;
                     }
                 }
-//                System.out.println( receive+ "match: " +receive.matches("\\w+-\\w+") );
                 else if (receive.matches(FOUND_SUCCESS)){
                     AlertUtils.showNotification("Bạn đã được ghép đôi\n" + "Đi đến phòng chat: " + receive);
                     break;
                 }
             }
-           gotoChatroom();
+            gotoChatroom();
             closeStage();
         }
     }
@@ -111,7 +107,7 @@ public class MainController {
         Stage stage = new Stage();
         ChatBoxController chatBoxController = new ChatBoxController();
         fxmlLoader.setController(chatBoxController);
-        stage.setTitle("chatroom");
+        stage.setTitle("Phòng chat");
         stage.setScene(scene);
         stage.show();
 

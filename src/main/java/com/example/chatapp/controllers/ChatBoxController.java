@@ -4,11 +4,12 @@ import com.example.chatapp.client.Client;
 import com.example.chatapp.utils.AlertUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -38,19 +39,16 @@ public class ChatBoxController implements Initializable {
     @FXML
     TextFlow textFlow;
 
-    @FXML
-            Label lbName;
-
 
     Client client = MainController.client;
     String dataReceive;
     String EXIT = "_EXIT";
     String FOUND_SUCCESS = "[a-zA-Z0-9 \\u0080-\\u9fff]*-[a-zA-Z0-9 \\u0080-\\u9fff]*";
     String ACCEPT_USER = "Y/N";
+    String WAIT_TO_FOUND = "_founding";
     public void receive() {
         Thread thread = new Thread(() -> {
             while ((dataReceive = client.getRecv().receiveFromServer()) != null) {
-//                dataReceive = client.getRecv().receiveFromServer();
                 System.out.println("Nhận: " + dataReceive);
                 Platform.runLater(new Runnable() {
                     @Override
@@ -59,11 +57,13 @@ public class ChatBoxController implements Initializable {
                             AlertUtils.showNotification(dataReceive + " khỏi phòng chat\n" + "Chúng tôi sẽ tìm người khác ngay sau đây" );
                             try {
                                 client.getSend().sendToServer("_findnew");
-
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
 
+                        }
+                        else if (dataReceive.equalsIgnoreCase(WAIT_TO_FOUND)) {
+                            AlertUtils.showNotification("Đang tìm người ghép đôi");
                         }
                         else if (dataReceive.contains(ACCEPT_USER)) {
                             Alert alert = AlertUtils.alert(Alert.AlertType.CONFIRMATION, dataReceive);
@@ -90,7 +90,7 @@ public class ChatBoxController implements Initializable {
                             messageBox.getChildren().clear();
                         }
                         else  {
-                            showMessage(dataReceive, "#ffffff", "#0098c7");
+                            showMessage(dataReceive, "#FFFFFF", "#839EFB", false);
                         }
 
                     }
@@ -112,24 +112,25 @@ public class ChatBoxController implements Initializable {
         }
         else {
             client.getSend().sendToServer(message);
-            showMessage(message, "#000000", "white");
+            showMessage(message, "black", "#FFFFFF", true);
             tfMessage.clear();
         }
 
     }
 
-    public void showMessage(String message, String textColor, String backgroundColor) {
-
+    public void showMessage(String message, String textColor, String backgroundColor, boolean right) {
         Text text = new Text(message);
-        textFlow = new TextFlow(text);
-        textFlow.setStyle("-fx-color: " + textColor + "; -fx-background-color: " + backgroundColor + "; -fx-background-radius: 20px;");
-
-        textFlow.setPadding(new Insets(5, 10, 5, 10));
-        text.setFill(Color.BLACK);
-
         text.setFont(Font.font("Segoe UI Historic", 15));
-        messageBox.getChildren().add(textFlow);
+        textFlow = new TextFlow(text);
+        textFlow.setMaxWidth(180);
+        textFlow.setPadding(new Insets(5, 10, 5, 10));
+        textFlow.setStyle("-fx-fill: " + textColor + "; -fx-background-color: " + backgroundColor + "; -fx-background-radius: 20px; -fx-margin: 0,0,10,0;");
+        HBox pane = new HBox(textFlow);
+        pane.setMargin(textFlow, new Insets(5,0,2,0));
+        pane.setAlignment(right ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+        messageBox.getChildren().add(pane);
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

@@ -13,7 +13,6 @@ public class Server {
     private static ServerSocket server = null;
     public static Vector<HandleClients> workers = new Vector<>();
 
-
     public static void main(String[] args) throws IOException {
         int i = 0;
         ExecutorService executor = Executors.newFixedThreadPool(numThread);
