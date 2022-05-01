@@ -31,10 +31,6 @@
 .tf_box {
     -fx-font-size: 16;
     -fx-background-radius : 10;
-    /*-fx-background-color: rgb(243, 243, 243);
-    -fx-border-color: black;
-    -fx-border-style: solid;
-    -fx-border-radius: 10;*/
 }
 
 #scroll_pane {
@@ -48,8 +44,5 @@
     -fx-background-color:#E5E5E5 ;
     -fx-background-radius : 25;
 
-    /*-fx-border-radius: 25px;
-    -fx-background-color: rgb(200, 211, 255);
-    -fx-background-color:rgb(214, 223, 255);*/
 
 }

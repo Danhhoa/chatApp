@@ -3,6 +3,7 @@ module com.example.chatapp {
     requires javafx.fxml;
     requires javafx.graphics;
     requires org.controlsfx.controls;
+    requires org.json;
 
 
     opens com.example.chatapp to javafx.fxml;

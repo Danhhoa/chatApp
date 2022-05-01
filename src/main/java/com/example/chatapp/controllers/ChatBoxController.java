@@ -2,6 +2,8 @@ package com.example.chatapp.controllers;
 
 import com.example.chatapp.client.Client;
 import com.example.chatapp.utils.AlertUtils;
+import com.example.chatapp.utils.Decryption;
+import com.example.chatapp.utils.Encryption;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,14 +13,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.controlsfx.control.Notifications;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URL;
+import java.security.PublicKey;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -39,24 +42,38 @@ public class ChatBoxController implements Initializable {
     @FXML
     TextFlow textFlow;
 
-
     Client client = MainController.client;
-    String dataReceive;
+
+
     String EXIT = "_EXIT";
     String FOUND_SUCCESS = "[a-zA-Z0-9 \\u0080-\\u9fff]*-[a-zA-Z0-9 \\u0080-\\u9fff]*";
     String ACCEPT_USER = "Y/N";
     String WAIT_TO_FOUND = "_founding";
+    String FIND_NEW = "_findnew";
+    PublicKey pubKey = MainController.pubKey;
+    SecretKeySpec skeySpec = MainController.skeySpec;
+    String dataReceive;
+    String dataEncrypt;
     public void receive() {
         Thread thread = new Thread(() -> {
-            while ((dataReceive = client.getRecv().receiveFromServer()) != null) {
+            System.out.println(pubKey);
+            System.out.println(skeySpec);
+            while ((dataEncrypt = client.getRecv().receiveFromServer()) != null) {
+                //Decrypt data by AES
+                dataReceive = Decryption.decryptDataByAES(dataEncrypt, skeySpec);
                 System.out.println("Nhận: " + dataReceive);
+
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        String encryptedMessage;
                         if (dataReceive.contains(EXIT)) {
                             AlertUtils.showNotification(dataReceive + " khỏi phòng chat\n" + "Chúng tôi sẽ tìm người khác ngay sau đây" );
                             try {
-                                client.getSend().sendToServer("_findnew");
+                                encryptedMessage = Encryption.encryptDataByAES(FIND_NEW, skeySpec);
+                                //Encrypt second time by publicKey RSA
+                                encryptedMessage = Encryption.encryptDataByRSA(encryptedMessage, pubKey);
+                                client.getSend().sendToServer(encryptedMessage);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -70,14 +87,22 @@ public class ChatBoxController implements Initializable {
                             Optional<ButtonType> result = alert.showAndWait();
                             if (result.isEmpty() || result.get() != ButtonType.OK) {
                                 try {
-                                    client.getSend().sendToServer("N");
+                                    String sendCancel = "N";
+                                    encryptedMessage = Encryption.encryptDataByAES(sendCancel, skeySpec);
+                                    //Encrypt second time by publicKey RSA
+                                    encryptedMessage = Encryption.encryptDataByRSA(encryptedMessage, pubKey);
+                                    client.getSend().sendToServer(encryptedMessage);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
                             }
                             else {
                                 try {
-                                    client.getSend().sendToServer("Y");
+                                    String sendYes = "Y";
+                                    encryptedMessage = Encryption.encryptDataByAES(sendYes, skeySpec);
+                                    //Encrypt second time by publicKey RSA
+                                    encryptedMessage = Encryption.encryptDataByRSA(encryptedMessage, pubKey);
+                                    client.getSend().sendToServer(encryptedMessage);
                                     messageBox.getChildren().clear();
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -111,7 +136,13 @@ public class ChatBoxController implements Initializable {
                     .showWarning();
         }
         else {
-            client.getSend().sendToServer(message);
+            String encryptedMessage;
+            encryptedMessage = Encryption.encryptDataByAES(message, skeySpec);
+
+            //Encrypt second time by publicKey RSA
+            encryptedMessage = Encryption.encryptDataByRSA(encryptedMessage, pubKey);
+
+            client.getSend().sendToServer(encryptedMessage);
             showMessage(message, "black", "#FFFFFF", true);
             tfMessage.clear();
         }
@@ -145,8 +176,18 @@ public class ChatBoxController implements Initializable {
             System.out.println("cancel");
         }
         else {
-            client.getSend().sendToServer("_bye");
-            client.getSend().sendToServer("_findnew");
+            String sendBye = "_bye",
+                    encryptedMessage,
+                    sendFindNew = "_findnew";
+            encryptedMessage = Encryption.encryptDataByAES(sendBye, skeySpec);
+            //Encrypt second time by publicKey RSA
+            encryptedMessage = Encryption.encryptDataByRSA(encryptedMessage, pubKey);
+            client.getSend().sendToServer(encryptedMessage);
+
+            encryptedMessage = Encryption.encryptDataByAES(sendFindNew, skeySpec);
+            //Encrypt second time by publicKey RSA
+            encryptedMessage = Encryption.encryptDataByRSA(encryptedMessage, pubKey);
+            client.getSend().sendToServer(encryptedMessage);
 
         }
     }
